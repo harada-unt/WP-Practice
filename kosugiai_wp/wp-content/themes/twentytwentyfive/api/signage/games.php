@@ -469,9 +469,9 @@ function build_game_data($post_id) {
     $tournament_post_id = null;
     
     if ( $post_type === 'j1_games' ) {
-        $tournament_post_id = 677; // J1試合結果のURL
+        $tournament_post_id = 181; // J1試合結果のURL
     } elseif ( $post_type === 'levain_games' ) {
-        $tournament_post_id = 700; // ルヴァンカップ試合結果のURL
+        $tournament_post_id = 183; // ルヴァンカップ試合結果のURL
     }
     
     // 試合結果のURL    
@@ -495,19 +495,19 @@ function build_game_data($post_id) {
     if ( $post_type === 'j1_games' ) {
         $opponent_club_id = get_field( 'opponent_club', $post_id );
         if ($game_side === 'HOME' ) {
-                $home_team_id = 685;
+                $home_team_id = 188;
                 $away_team_id = $opponent_club_id;
             } elseif ( $game_side === 'AWAY' ) {
                 $home_team_id = $opponent_club_id;
-                $away_team_id = 685;
+                $away_team_id = 188;
             } 
     } else {
         if ($game_side === 'HOME' ) {
-                $home_team_id = 685;
+                $home_team_id = 188;
                 $away_team_id = $post_id;
             } elseif ( $game_side === 'AWAY' ) {
                 $home_team_id = $post_id;
-                $away_team_id = 685;
+                $away_team_id = 188;
             } 
     }
         

@@ -262,6 +262,63 @@ function games_info_widget_display() {
 	<?php
 }
 
+function add_notifications_sidebar_widget() {
+	$screen = get_current_screen();
+	if ($screen && $screen->id === 'edit-other_video') {
+		add_action('admin_footer', 'notifications_info_widget_display');
+	}
+}
+add_action('current_screen', 'add_notifications_sidebar_widget');
+
+function notifications_info_widget_display() {
+	?>
+	<script>
+	jQuery(document).ready(function($) {
+		var widget = `
+		<p>以下のリンクからその他の動画情報を管理できます。</p>
+		
+		<div>
+			<div class="postbox">
+				<div class="inside">
+					<div>
+						<h3>デフォルト動画</h3>
+						<p>デフォルト動画に関する情報を管理します</p>
+						<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=default_video' ) ); ?>" 
+						   class="button button-primary button-large">デフォルト動画</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div>
+			<div class="postbox">
+				<div class="inside">
+					<div>
+						<h3 style="margin-top: 20px;">エラー動画</h3>
+						<p>エラー動画に関する情報を管理します</p>
+						<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=error_video' ) ); ?>" 
+						   class="button button-primary button-large">エラー動画</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		`;
+		
+		$('.wp-header-end').after(widget);
+	
+		$('.page-title-action').remove();
+		$('.subsubsub').remove();
+		$('.search-box').remove();
+		$('.tablenav').remove();
+		$('.wp-list-table').remove();
+		$('.view-switch').remove();
+		$('#posts-filter .actions').remove();
+		$('#screen-options-link-wrap').remove();
+	});
+	</script>
+	<?php
+}
+
 // J1試合結果にカスタムカラムを追加
 function j1_games_columns($columns) {
 	$new_columns = array();
@@ -290,10 +347,10 @@ function j1_games_custom_column($column, $post_id) {
 			}
 			break;
 		case 'opponent_club':
-			$opponent_club_id = get_field('opponent_club', $post_id);
-			if ($opponent_club_id) {	
-				$club_name = get_field('opponent_club', $opponent_club_id);
-				echo $club_name ? esc_html($club_name) : '—';
+			$opponent_club_id = get_field( 'opponent_club', $post_id );
+			if ( $opponent_club_id ) {
+				$club_name = get_field( 'team_name', $opponent_club_id );
+				echo $club_name ? esc_html( $club_name ) : '—';
 			} else {
 				echo '—';
 			}
@@ -382,14 +439,9 @@ function levain_games_custom_column($column, $post_id) {
 			}
 			break;
 		case 'opponent_club':
-			$opponent_club_id = get_field('opponent_club', $post_id);
-			if ($opponent_club_id) {	
-				$club_name = get_field('opponent_club', $opponent_club_id);
-				echo $club_name ? esc_html($club_name) : '—';
-			} else {
-				echo '—';
-			}
-			break;	
+			$club_name = get_field( 'team_name', $post_id );
+			echo $club_name ? esc_html( $club_name ) : '—';
+			break;
 		case 'game_datetime':
 			$game_datetime = get_field('game_datetime', $post_id);
 			if ($game_datetime) {
@@ -474,14 +526,9 @@ function other_games_custom_column($column, $post_id) {
 			}
 			break;
 		case 'opponent_club':
-			$opponent_club_id = get_field('opponent_club', $post_id);
-			if ($opponent_club_id) {	
-				$club_name = get_field('opponent_club', $opponent_club_id);
-				echo $club_name ? esc_html($club_name) : '—';
-			} else {
-				echo '—';
-			}
-			break;	
+			$club_name = get_field( 'team_name', $post_id );
+			echo $club_name ? esc_html( $club_name ) : '—';
+			break;
 		case 'game_datetime':
 			$game_datetime = get_field('game_datetime', $post_id);
 			if ($game_datetime) {
@@ -529,6 +576,7 @@ function other_games_custom_column($column, $post_id) {
 			break;
 	}
 }
+add_action('manage_other_games_posts_custom_column', 'other_games_custom_column', 10, 2);
 
 function other_games_sortable_columns($columns) {
 	$columns['game_datetime'] = 'game_datetime';
@@ -589,7 +637,7 @@ function tournaments_custom_column($column, $post_id) {
 		case 'tournament_logo':
 			$tournament_logo = get_field('tournament_logo', $post_id);
 			if ($tournament_logo) {
-				echo '<img src="' . esc_url( $tournament_logo ) . '" style="max-width: 60px; max-height: 60px;" />';
+				echo '<img src="' . esc_url($tournament_logo) . '" style="max-width: 60px; max-height: 60px;" />';
 			} else {
 				echo '—';
 			}
@@ -605,7 +653,7 @@ function tournaments_custom_column($column, $post_id) {
 			break;
 	}
 }
-add_action('manage_tournaments_posts_custom_column', 'tournaments_custom_column');
+add_action('manage_tournaments_posts_custom_column', 'tournaments_custom_column', 10, 2);
 
 // チーム情報にカスタムカラムを追加
 function teams_columns($columns) {
@@ -823,7 +871,7 @@ function default_video_custom_column($column, $post_id) {
 			break;
 	}
 }
-add_action('manage_default_video_posts_custom_column', 'default_video_custom_column');
+add_action('manage_default_video_posts_custom_column', 'default_video_custom_column', 10, 2);
 
 // エラー動画一覧にカスタムカラムを追加
 function error_video_columns($columns) {
@@ -868,7 +916,7 @@ function error_video_custom_column($column, $post_id) {
 			break;
 	}
 }
-add_action('manage_error_video_posts_custom_column', 'error_video_custom_column');	
+add_action('manage_error_video_posts_custom_column', 'error_video_custom_column', 10, 2);
 
 // デフォルトの行アクションを非表示にするCSSを追加	
 function hide_row_actions_css() {

@@ -3737,6 +3737,7 @@
         "singular_capability_name": "post",
         "plural_capability_name": "posts",
         "supports": [
+            "title",
             "custom-fields"
         ],
         "taxonomies": "",
@@ -3901,7 +3902,6 @@
         "singular_capability_name": "post",
         "plural_capability_name": "posts",
         "supports": [
-            "title",
             "custom-fields"
         ],
         "taxonomies": "",
