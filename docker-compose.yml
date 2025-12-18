@@ -1,0 +1,70 @@
+# ----------------------------------------------------------------
+# BackEnd System Integrated Development Environment for PHP
+# Version: 0.9.2
+# ----------------------------------------------------------------
+services:
+  app:
+    build:
+      context: ./
+      args:
+        # PHP Version ["7.4", "8.0", "8.1", "8.2"(default), "8.3"]
+        PHP_VERSION: "8.3"
+        # プロジェクトソースのうち公開するディレクトリ [""(default), "/html"]
+        PUBLIC_DIR: ""
+    ports:
+      - 80:80
+    environment:
+      TZ: Asia/Tokyo
+      XDEBUG_MODE: "debug"
+      # https://xdebug.org/docs/all_settings#start_with_request
+      XDEBUG_START_WITH_REQUEST: "yes"
+      # https://xdebug.org/docs/all_settings#idekey
+      XDEBUG_IDEKEY: "VSCODE"
+      WP_DB_HOST: "mysql"
+      WP_DB_NAME: "kosugiai_cms"
+      WP_DB_USER: "kosugiai_cms"
+      WP_DB_PASSWORD: "kosugiai_cms"
+      WP_TABLE_PREFIX: "wp_"
+      WP_DEBUG: "true"
+    volumes: 
+    #  - ".:/var/www/app"
+      - ./kosugiai_wp/wp-content/themes/twentytwentyfive:/var/www/app/kosugiai_wp/wp-content/themes/twentytwentyfive
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql
+    command:
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_0900_ai_ci"
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_DATABASE: "kosugiai_cms"
+      MYSQL_USER: "kosugiai_cms"
+      MYSQL_PASSWORD: "kosugiai_cms"
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    volumes:
+      - "mysql:/var/lib/mysql"
+    cap_add:
+      - SYS_NICE
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      timeout: 5s
+      interval: 5s
+      retries: 10
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8080:80
+    environment:
+      PMA_ARBITRARY: "1"
+      MEMORY_LIMIT: "256M"
+      UPLOAD_LIMIT: "128M"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql:
