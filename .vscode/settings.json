@@ -1,0 +1,7 @@
+// ----------------------------------------------------------------
+// BackEnd System Integrated Development Environment for PHP
+// Version: 0.9.2
+// ----------------------------------------------------------------
+{
+    "php.format.codeStyle": "WordPress"
+}

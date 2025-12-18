@@ -1,0 +1,25 @@
+// ----------------------------------------------------------------
+// BackEnd System Integrated Development Environment for PHP
+// Version: 0.9.2
+// ----------------------------------------------------------------
+{
+    "name": "WordPress",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/var/www/app",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "php.format.codeStyle": "WordPress"
+            },
+            "extensions": [
+                "DEVSENSE.composer-php-vscode",
+                "DEVSENSE.phptools-vscode",
+                "EditorConfig.EditorConfig",
+                "xdebug.php-debug"
+            ]
+        }
+    },
+    "remoteUser": "vscode",
+    "postCreateCommand": "sudo chown vscode:vscode -R ${containerWorkspaceFolder}/*/wp-content"
+}
